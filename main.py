@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, redirect
 from data import db_session
 from data.jobs import Jobs
@@ -6,6 +7,7 @@ from data.add_data_db import add_user, add_jobs
 from forms.job import JobsForm
 from forms.user import LoginForm, RegisterForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from waitress import serve
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -104,7 +106,11 @@ def main():
     # add_user()
     # add_jobs()
 
-    app.run(port=8080, host='127.0.0.1')
+    port = int(os.environ.get('PORT', 5000))
+    # app.run(port=port, host="0.0.0.0")
+
+    # с дефаултными значениями будет не более 4 потов
+    serve(app, port=port, host="0.0.0.0")
 
 
 if __name__ == '__main__':
